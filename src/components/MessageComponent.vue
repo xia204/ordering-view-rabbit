@@ -5,7 +5,7 @@
     <div class="text-center mb-4">
       <h3 class="text-h6 font-weight-bold text-on-surface">Recibo de Compra</h3>
       <div class="text-caption text-medium-emphasis">
-        {{ formatEventDate(order.EventDate) }}
+        {{ formatEventDate(message?.EventDate) }}
       </div>
     </div>
 
@@ -14,8 +14,8 @@
     <!-- Cliente -->
     <div class="mb-3">
       <div class="text-subtitle-2 font-weight-medium text-on-surface">Cliente</div>
-      <div>{{ order.FirstName }} {{ order.LastName }}</div>
-      <div class="text-caption text-on-surface">{{ order.EmailAddress }}</div>
+      <div>{{ message?.FirstName }} {{ message?.LastName }}</div>
+      <div class="text-caption text-on-surface">{{ message?.EmailAddress }}</div>
     </div>
 
     <v-divider class="my-3"></v-divider>
@@ -23,9 +23,9 @@
     <!-- Dirección -->
     <div class="mb-3">
       <div class="text-subtitle-2 font-weight-medium text-on-surface">Dirección</div>
-      <div>{{ order.AddressLine }}</div>
-      <div>{{ order.State }}, {{ order.Country }}</div>
-      <div>{{ order.ZipCode }}</div>
+      <div>{{ message?.AddressLine }}</div>
+      <div>{{ message?.State }}, {{ message?.Country }}</div>
+      <div>{{ message?.ZipCode }}</div>
     </div>
 
     <v-divider class="my-3"></v-divider>
@@ -33,8 +33,8 @@
     <!-- Pago -->
     <div class="mb-3">
       <div class="text-subtitle-2 font-weight-medium text-on-surface">Pago</div>
-      <div>Tarjeta: **** **** **** {{ order.CardNumber.slice(-4) }}</div>
-      <div>Método: {{ getPaymentMethod(order.PaymentMethod) }}</div>
+      <div>Tarjeta: **** **** **** {{ message?.CardNumber?.slice(-4) ?? '----' }}</div>
+      <div>Método: {{ getPaymentMethod(message?.PaymentMethod) }}</div>
     </div>
 
     <v-divider class="my-3"></v-divider>
@@ -42,13 +42,13 @@
     <!-- TOTAL -->
     <div class="d-flex justify-space-between">
       <strong>Total:</strong>
-      <strong class="text-primary">${{ order.TotalPrice }}</strong>
+      <strong class="text-primary">${{ message?.TotalPrice }}</strong>
     </div>
 
     <v-divider class="my-3"></v-divider>
 
     <div class="text-caption text-medium-emphasis mt-2">
-      Evento: {{ order.EventType }}
+      Evento: {{ message?.EventType }}
     </div>
 
   </div>
@@ -56,7 +56,7 @@
 
 <script setup>
 const props = defineProps({
-  order: { type: Object, required: true }
+  message: { type: Object, required: true }
 })
 
 const formatEventDate = (date) => {

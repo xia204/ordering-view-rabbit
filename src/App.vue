@@ -5,7 +5,10 @@
     <template v-if="!isLoginRoute">
       <v-app-bar flat>
         <v-container class="mx-auto d-flex align-center justify-center">
-          <v-avatar class="me-4" color="grey-darken-1" size="32">U</v-avatar>
+          <v-avatar v-if="isAuthenticated" class="me-4" color="grey-darken-1" size="32">
+            {{ user?.name ? user.name.charAt(0).toUpperCase() : 'U' }}
+          </v-avatar>
+          <v-avatar v-else class="me-4" color="grey-darken-1" size="32">U</v-avatar>
 
           <!-- botones del navbar -->
           <v-btn v-for="route in routes" :key="route.name" :to="route.path" variant="text">
@@ -14,10 +17,11 @@
 
           <v-spacer></v-spacer>
 
-          <v-responsive max-width="160">
-            <v-text-field density="compact" label="Buscar" rounded="lg" variant="solo-filled" flat hide-details
-              single-line></v-text-field>
-          </v-responsive>
+          <!-- Botón de Logout visible cuando el usuario está autenticado -->
+          <v-btn v-if="isAuthenticated" variant="text" class="ms-4" @click="logout">
+            <v-icon left>mdi-logout</v-icon>
+            Cerrar sesión
+          </v-btn>
         </v-container>
       </v-app-bar>
     </template>
@@ -40,7 +44,7 @@ import { useAuth } from './composables/useAuth'
 
 const route = useRoute()
 const router = useRouter()
-const { isAuthenticated, checkAuth } = useAuth()
+const { isAuthenticated, checkAuth, logout, user } = useAuth()
 
 // Verificar autenticación al cargar la app
 onMounted(() => {
@@ -57,8 +61,8 @@ const routes = [
   { name: 'Inicio', path: '/home' },
   { name: 'Ordenar', path: '/orders' },
   { name: 'Pedidos', path: '/messages' },
+  { name: 'Productos', path: '/list-products' },
 ]
-
 // → Ocultar navbar en login
 const isLoginRoute = computed(() => route.path === '/login')
 </script>

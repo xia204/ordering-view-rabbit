@@ -100,16 +100,9 @@
                             </v-form>
                         </v-col>
 
-                        <!-- COLUMNA ANIMADA DE TARJETA -->
+                        <!-- COLUMNA DE PRODUCTOS DEL CARRITO -->
                         <v-col cols="12" md="6" class="d-flex align-center justify-center">
-                            <div class="card-animation-container">
-                                <div class="credit-card">
-                                    <div class="chip"></div>
-                                    <div class="card-number">**** **** **** 4581</div>
-                                    <div class="card-holder">NAME CLIENT</div>
-                                    <div class="card-exp">MM/AA</div>
-                                </div>
-                            </div>
+                             <cart-items />
                         </v-col>
                     </v-row>
                 </v-card>
@@ -121,8 +114,12 @@
 
 <script setup>
 import { ref } from "vue";
-import axios from "axios";
+import { axiosClient } from '@/api/axiosClient'
+import API_ROUTES from '@/api/routes'
+import CartItems from '@/components/CartItems.vue'
+import { useCart } from '@/composables/useCart';
 
+const { cart, total } = useCart();
 const isValid = ref(false);
 const form = ref(null);
 
@@ -150,72 +147,97 @@ const paymentMethods = [
 ];
 
 const submitOrder = async () => {
-    if (!form.value.validate()) return;
+  if (!form.value.validate()) return;
 
-    try {
-        await axios.post("https://10.96.124.11:7224/api/v1/Order", order.value);
-        alert("Orden creada correctamente");
-    } catch (error) {
-        console.error(error);
-        alert("Ocurrió un error");
-    }
+  // Payload EXACTO como lo espera tu microservicio
+  const payload = {
+    ...order.value,
+    totalPrice: total.value, // calculado en la vista
+    items: cart.value.map(p => ({
+      productId: p.id,
+      quantity: p.quantity
+    }))
+  };
+
+  try {
+    await axiosClient.post(API_ROUTES.ORDER.CREATE, payload);
+    alert("Orden creada correctamente");
+  } catch (error) {
+    console.error(error);
+    alert("Ocurrió un error");
+  }
 };
+
 </script>
 <style scoped>
 .card-animation-container {
-  perspective: 1000px;
-  width: 100%;
-  display: flex;
-  justify-content: center;
+    perspective: 1000px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 .credit-card {
-  width: 260px;
-  height: 160px;
-  background: linear-gradient(135deg, #3f51b5, #5c6bc0);
-  border-radius: 15px;
-  color: white;
-  padding: 20px;
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
-  transform-style: preserve-3d;
-  animation: float 4s ease-in-out infinite, tilt 6s ease-in-out infinite;
+    width: 260px;
+    height: 160px;
+    background: linear-gradient(135deg, #21274c, #535873);
+    border-radius: 15px;
+    color: white;
+    padding: 20px;
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+    transform-style: preserve-3d;
+    animation: float 4s ease-in-out infinite, tilt 6s ease-in-out infinite;
 }
 
 /* Animación de flotación */
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-12px);
+    }
 }
 
 /* Animación de inclinación 3D */
 @keyframes tilt {
-  0%, 100% { transform: rotateY(0deg); }
-  50% { transform: rotateY(8deg); }
+
+    0%,
+    100% {
+        transform: rotateY(0deg);
+    }
+
+    50% {
+        transform: rotateY(18deg);
+    }
 }
 
 /* Detalles de la tarjeta */
 .chip {
-  width: 40px;
-  height: 30px;
-  background: gold;
-  border-radius: 6px;
-  margin-bottom: 20px;
+    width: 40px;
+    height: 30px;
+    background: rgb(140, 121, 14);
+    border-radius: 6px;
+    margin-bottom: 20px;
 }
 
 .card-number {
-  font-size: 1rem;
-  letter-spacing: 3px;
-  margin-bottom: 15px;
+    font-size: 1rem;
+    letter-spacing: 3px;
+    margin-bottom: 15px;
 }
 
 .card-holder {
-  font-size: 0.8rem;
-  opacity: 0.9;
-  margin-bottom: 4px;
+    font-size: 0.8rem;
+    opacity: 0.9;
+    margin-bottom: 4px;
 }
 
 .card-exp {
-  font-size: 0.8rem;
-  opacity: 0.9;
+    font-size: 0.8rem;
+    opacity: 0.9;
 }
 </style>

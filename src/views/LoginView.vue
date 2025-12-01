@@ -54,7 +54,8 @@
 <script setup>
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
+import { axiosClient } from '@/api/axiosClient'
+import API_ROUTES from '@/api/routes'
 import loginImg from '../img/login.jpg'
 
 const router = useRouter()
@@ -76,7 +77,7 @@ const handleLogin = async () => {
     error.value = null
 
     try {
-        const response = await axios.post('https://localhost:7073/api/Auth/login', credentials.value)
+        const response = await axiosClient.post(API_ROUTES.AUTH.LOGIN, credentials.value)
         const { accessToken, refreshToken, expiresAt, user } = response.data
 
         if (!accessToken) throw new Error('Respuesta inválida del servidor: falta accessToken')

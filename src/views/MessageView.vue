@@ -2,7 +2,7 @@
   <v-container class="py-16">
     <v-row>
       <v-col cols="12">
-        <message-component v-for="message in messages" :key="message.id" :message="message" />
+        <message-component v-for="message in messages" :key="message.id" :message="message.orderDetails" />
       </v-col>
     </v-row>
   </v-container>

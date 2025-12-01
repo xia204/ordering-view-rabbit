@@ -1,7 +1,8 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr'
+import { API_BASES } from '@/api/routes'
 
-const serverBase = 'http://localhost:5091'
+const serverBase = API_BASES.SIGNAL
 const hubPath = '/orderHub'
 
 // GLOBAL => compartido por toda la app

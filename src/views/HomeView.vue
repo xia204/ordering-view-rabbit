@@ -7,21 +7,11 @@
     </h1>
 
     <!-- Carrusel -->
-    <v-carousel
-      cycle
-      hide-delimiter-background
-      height="380"
-      class="rounded-xl elevation-4 mb-10"
-    >
-      <v-carousel-item
-        v-for="(item, index) in carouselItems"
-        :key="index"
-      >
+    <v-carousel cycle hide-delimiter-background height="380" class="rounded-xl elevation-4 mb-10">
+      <v-carousel-item v-for="(item, index) in carouselItems" :key="index">
         <v-img :src="item.image" height="100%" cover>
-          <div
-            class="d-flex flex-column justify-end pa-6"
-            style="background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0.05)); height: 100%;"
-          >
+          <div class="d-flex flex-column justify-end pa-6"
+            style="background: linear-gradient(to top, rgba(0,0,0,0.55), rgba(0,0,0,0.05)); height: 100%;">
             <h2 class="text-h5 text-white font-weight-bold">
               {{ item.title }}
             </h2>
@@ -35,74 +25,25 @@
 
     <!-- Grid de Productos -->
     <v-row>
-      <v-col
-        v-for="product in products"
-        :key="product.id"
-        cols="12"
-        sm="6"
-        md="4"
-        lg="3"
-      >
-        <v-card height="100%" class="d-flex flex-column rounded-xl elevation-3">
-
-          <!-- Imagen -->
-          <v-img
-            :src="product.imageUrl || fallbackImg"
-            height="200"
-            cover
-            class="bg-grey-lighten-2"
-          >
-            <template #placeholder>
-              <v-row
-                class="fill-height ma-0"
-                align="center"
-                justify="center"
-              >
-                <v-progress-circular indeterminate color="primary" />
-              </v-row>
-            </template>
-          </v-img>
-
-          <!-- Título -->
-          <v-card-title class="text-truncate">
-            {{ product.name }}
-          </v-card-title>
-
-          <!-- Descripción + Precio -->
-          <v-card-text>
-            <div class="text-truncate mb-2">
-              {{ product.description }}
-            </div>
-
-            <div class="text-h6 text-success">
-              ${{ product.price.toFixed(2) }}
-            </div>
-          </v-card-text>
-
-          <!-- Botón -->
-          <v-card-actions class="mt-auto px-4 py-4">
-            <v-spacer></v-spacer>
-
-            <v-btn
-              color="secondary"
-              variant="elevated"
-              rounded="lg"
-              @click="addToCart(product)"
-            >
-              <v-icon start>mdi-cart</v-icon>
-              Agregar
-            </v-btn>
-          </v-card-actions>
-
-        </v-card>
+      <v-col v-for="product in products" :key="product.id" cols="12" sm="6" md="4" lg="3">
+        <product-list-component :product="product" @add="addToCart" />
       </v-col>
     </v-row>
+
 
   </v-container>
 </template>
 
 <script setup>
+import ProductListComponent from '@/components/ProductListComponent.vue'
 import { ref, onMounted } from 'vue'
+import { useCart } from '@/composables/useCart';
+
+const { addProduct } = useCart();
+
+const addToCart = (product) => {
+  addProduct(product);
+};
 
 // Usuario
 const username = ref('Usuario')
@@ -135,40 +76,14 @@ const carouselItems = ref([
   }
 ])
 
-// Productos
+// Aquí van tus productos reales (si quieres, luego los conecto)
 const products = ref([
   {
     id: 1,
-    name: 'Teclado Mecánico',
-    description: 'Interruptores azules y retroiluminación RGB.',
-    price: 89.99,
-    imageUrl: 'https://cdn.pixabay.com/photo/2022/08/14/16/39/keyboard-7386244_1280.jpg'
-  },
-  {
-    id: 2,
-    name: 'Mouse Gamer',
-    description: '16000 DPI con iluminación personalizable.',
-    price: 59.99,
-    imageUrl: 'https://cdn.pixabay.com/photo/2014/03/20/00/00/computer-mouse-290950_1280.jpg'
-  },
-  {
-    id: 3,
-    name: 'Monitor 27” 144Hz',
-    description: 'Pantalla IPS con colores vibrantes.',
-    price: 299.99,
-    imageUrl: 'https://cdn.pixabay.com/photo/2016/11/29/08/41/apple-1868496_1280.jpg'
-  },
-  {
-    id: 4,
-    name: 'Silla Ergonómica',
-    description: 'Comodidad premium para largas sesiones.',
-    price: 199.99,
-    imageUrl: 'https://cdn.pixabay.com/photo/2021/09/26/11/44/chair-6657314_1280.jpg'
+    name: "Producto demo",
+    description: "Para probar grid",
+    price: 200,
+    imageUrl: null
   }
 ])
-
-// Acción del carrito
-const addToCart = (product) => {
-  console.log('Producto agregado:', product)
-}
 </script>

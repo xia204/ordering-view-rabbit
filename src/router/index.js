@@ -2,7 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import OrdersView from '@/views/OrdersView.vue'
-import MessageComponent from '@/components/MessageComponent.vue'
+import MessageView from '@/views/MessageView.vue'
+import ProductView from '@/views/ProductView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -32,15 +33,15 @@ const router = createRouter({
     {
       path: '/messages',
       name: 'messages',
-      component: MessageComponent,
+      component: MessageView,
       meta: { requiresAuth: true }
-    },/*
+    },
     {
-      path: '/list-orders',
-      name: 'list-orders',
-      component: OrdersView,
+      path: '/list-products',
+      name: 'list-products',
+      component: ProductView,
       meta: { requiresAuth: true }
-    }*/
+    }
   ],
 })
 
